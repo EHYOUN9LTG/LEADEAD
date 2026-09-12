@@ -90,6 +90,19 @@
       margin-top: 12px;
     }
 
+    .edit {
+      background: #222;
+      margin-top: 12px;
+    }
+
+    .save {
+      background: #087f23;
+    }
+
+    .cancel {
+      background: #777;
+    }
+
     .refresh {
       background: #444;
       margin-bottom: 15px;
@@ -140,12 +153,19 @@
     .date {
       color: #888;
       font-size: 13px;
+      margin-top: 10px;
     }
 
     .empty {
       text-align: center;
       color: #777;
       padding: 20px 0;
+    }
+
+    .edit-label {
+      display: block;
+      font-weight: bold;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -549,7 +569,6 @@
         .value = "";
 
 
-      // 목록 새로고침
       loadPosts();
 
 
@@ -633,6 +652,8 @@
 
       div.className = "post";
 
+      div.dataset.id = post.id;
+
 
       let html = "";
 
@@ -666,6 +687,16 @@
       }
 
 
+      // 수정 버튼
+      html +=
+        '<button class="edit" onclick="editPost(\'' +
+        post.id +
+        '\')">' +
+        "✏️ 수정" +
+        "</button>";
+
+
+      // 삭제 버튼
       html +=
         '<button class="delete" onclick="deletePost(\'' +
         post.id +
@@ -679,6 +710,194 @@
       list.appendChild(div);
 
     });
+
+  }
+
+
+  // =========================
+  // 게시물 수정 화면
+  // =========================
+
+  async function editPost(id) {
+
+    const {
+      data: post,
+      error
+    } =
+      await supabaseClient
+        .from("posts")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+
+    if (error) {
+
+      console.error(error);
+
+      document
+        .getElementById("postStatus")
+        .textContent =
+          "❌ 게시물 불러오기 실패: " +
+          error.message;
+
+      return;
+    }
+
+
+    const card =
+      document.querySelector(
+        '.post[data-id="' + id + '"]'
+      );
+
+
+    if (!card) {
+      return;
+    }
+
+
+    let html = "";
+
+
+    // 기존 사진은 그대로 보여줌
+    if (post.image_url) {
+
+      html +=
+        '<img src="' +
+        post.image_url +
+        '" alt="게시물 이미지">';
+    }
+
+
+    html +=
+      '<label class="edit-label">제목</label>';
+
+
+    html +=
+      '<input id="edit-title-' +
+      id +
+      '" type="text" value="' +
+      escapeAttribute(post.title) +
+      '">';
+
+
+    html +=
+      '<label class="edit-label">내용</label>';
+
+
+    html +=
+      '<textarea id="edit-content-' +
+      id +
+      '">' +
+      escapeHtml(post.content) +
+      "</textarea>";
+
+
+    html +=
+      '<button class="save" onclick="savePost(\'' +
+      id +
+      '\')">' +
+      "💾 저장" +
+      "</button>";
+
+
+    html +=
+      '<button class="cancel" onclick="loadPosts()">' +
+      "↩️ 취소" +
+      "</button>";
+
+
+    card.innerHTML = html;
+
+  }
+
+
+  // =========================
+  // 게시물 수정 저장
+  // =========================
+
+  async function savePost(id) {
+
+    const titleInput =
+      document.getElementById(
+        "edit-title-" + id
+      );
+
+    const contentInput =
+      document.getElementById(
+        "edit-content-" + id
+      );
+
+
+    if (!titleInput || !contentInput) {
+      return;
+    }
+
+
+    const title =
+      titleInput.value.trim();
+
+    const content =
+      contentInput.value.trim();
+
+
+    const status =
+      document.getElementById(
+        "postStatus"
+      );
+
+
+    if (!title) {
+
+      status.textContent =
+        "제목을 입력해줘.";
+
+      return;
+    }
+
+
+    if (!content) {
+
+      status.textContent =
+        "내용을 입력해줘.";
+
+      return;
+    }
+
+
+    status.textContent =
+      "수정 저장 중...";
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("posts")
+        .update({
+          title: title,
+          content: content
+        })
+        .eq("id", id);
+
+
+    if (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ 수정 실패: " +
+        error.message;
+
+      return;
+    }
+
+
+    status.textContent =
+      "✏️ 수정 완료!";
+
+
+    loadPosts();
 
   }
 
@@ -772,11 +991,11 @@
 
   function escapeHtml(text) {
 
-    if (!text) {
+    if (text === null || text === undefined) {
       return "";
     }
 
-    return text
+    return String(text)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -785,10 +1004,28 @@
   }
 
 
+  function escapeAttribute(text) {
+
+    if (text === null || text === undefined) {
+      return "";
+    }
+
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/'/g, "&#039;");
+  }
+
+
+  // =========================
   // 시작
+  // =========================
+
   checkUser();
 
 </script>
 
 </body>
-</html>
+</html>      
