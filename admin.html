@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>LEADEAD 관리자</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>LEADEAD 관리자</title>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <style>
     * {
       box-sizing: border-box;
     }
@@ -154,15 +147,13 @@
       word-break: break-word;
     }
 
-    /*
-      게시물 목록
-    */
+    /* 게시물 */
 
     .post {
       background: #ffffff;
       border: 1px solid #e5e5e5;
       border-radius: 15px;
-      padding: 12px;
+      padding: 14px;
       margin-top: 15px;
     }
 
@@ -173,6 +164,7 @@
       object-fit: cover;
       border-radius: 12px;
       background: #f5f5f5;
+      margin-bottom: 14px;
     }
 
     .post-no-image {
@@ -183,6 +175,35 @@
       justify-content: center;
       background: #f5f5f5;
       border-radius: 12px;
+      color: #999999;
+      margin-bottom: 14px;
+    }
+
+    .post-author {
+      font-size: 14px;
+      color: #777777;
+      margin-bottom: 6px;
+    }
+
+    .post-title {
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+
+    .post-content {
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: #333333;
+      margin-bottom: 12px;
+    }
+
+    .post-date {
+      font-size: 12px;
       color: #999999;
       margin-bottom: 10px;
     }
@@ -229,132 +250,102 @@
         font-size: 27px;
       }
     }
-  </style>
-</head>
-
-<body>
-
-<header>
+  </style></head><body><header>
   <h1>LEADEAD</h1>
   <p>관리자 페이지</p>
-</header>
+</header><div class="container">  <!-- 로그인 -->  <section id="loginBox" class="card"><h2>관리자 로그인</h2>
 
-<div class="container">
+<input
+  id="email"
+  type="email"
+  placeholder="이메일"
+>
 
-  <!-- 로그인 -->
-  <section id="loginBox" class="card">
+<input
+  id="password"
+  type="password"
+  placeholder="비밀번호"
+>
 
-    <h2>관리자 로그인</h2>
+<button class="login" onclick="login()">
+  로그인
+</button>
 
-    <input
-      id="email"
-      type="email"
-      placeholder="이메일"
-    >
+<div id="loginStatus" class="status"></div>
 
-    <input
-      id="password"
-      type="password"
-      placeholder="비밀번호"
-    >
+  </section>  <!-- 관리자 -->  <section id="adminBox" class="hidden"><!-- 새 게시물 -->
+<div class="card">
 
-    <button class="login" onclick="login()">
-      로그인
-    </button>
+  <h2>새 게시물 작성</h2>
 
-    <div id="loginStatus" class="status"></div>
+  <input
+    id="title"
+    type="text"
+    placeholder="제목"
+  >
 
-  </section>
+  <textarea
+    id="content"
+    placeholder="내용"
+  ></textarea>
 
+  <input
+    id="image"
+    type="file"
+    accept="image/*"
+    onchange="previewImage()"
+  >
 
-  <!-- 관리자 -->
-  <section id="adminBox" class="hidden">
+  <img
+    id="imagePreview"
+    class="preview"
+    alt="미리보기"
+  >
 
-    <!-- 새 게시물 -->
-    <div class="card">
+  <button
+    class="upload"
+    onclick="uploadPost()"
+  >
+    게시물 업로드
+  </button>
 
-      <h2>새 게시물 작성</h2>
-
-      <input
-        id="title"
-        type="text"
-        placeholder="제목"
-      >
-
-      <textarea
-        id="content"
-        placeholder="내용"
-      ></textarea>
-
-      <input
-        id="image"
-        type="file"
-        accept="image/*"
-        onchange="previewImage()"
-      >
-
-      <img
-        id="imagePreview"
-        class="preview"
-        alt="미리보기"
-      >
-
-      <button
-        class="upload"
-        onclick="uploadPost()"
-      >
-        게시물 업로드
-      </button>
-
-      <div
-        id="uploadStatus"
-        class="status"
-      ></div>
-
-    </div>
-
-
-    <!-- 게시물 목록 -->
-    <div class="card">
-
-      <h2>게시물 목록</h2>
-
-      <!-- 새로고침 -->
-      <button
-        class="refresh"
-        onclick="loadPosts()"
-      >
-        🔄 새로고침
-      </button>
-
-      <div
-        id="postStatus"
-        class="status"
-      ></div>
-
-      <div id="postList"></div>
-
-    </div>
-
-
-    <!-- 로그아웃 -->
-    <div class="card">
-
-      <button
-        class="logout"
-        onclick="logout()"
-      >
-        로그아웃
-      </button>
-
-    </div>
-
-  </section>
+  <div id="uploadStatus" class="status"></div>
 
 </div>
 
 
-<script>
+<!-- 게시물 목록 -->
+<div class="card">
+
+  <h2>게시물 목록</h2>
+
+  <button
+    class="refresh"
+    onclick="loadPosts()"
+  >
+    🔄 새로고침
+  </button>
+
+  <div id="postStatus" class="status"></div>
+
+  <div id="postList"></div>
+
+</div>
+
+
+<!-- 로그아웃 -->
+<div class="card">
+
+  <button
+    class="logout"
+    onclick="logout()"
+  >
+    로그아웃
+  </button>
+
+</div>
+
+  </section></div><script>
 
   // ==========================================
   // Supabase 설정
@@ -557,7 +548,6 @@
     let imageUrl = null;
 
 
-    // 이미지 업로드
     if (file) {
 
       const extension =
@@ -614,7 +604,6 @@
     }
 
 
-    // 게시물 저장
     const { error } =
       await supabaseClient
         .from("posts")
@@ -642,7 +631,6 @@
       "✅ 게시물이 업로드됐어!";
 
 
-    // 입력 초기화
     document
       .getElementById("title")
       .value = "";
@@ -726,6 +714,10 @@
     }
 
 
+    // ==========================================
+    // 게시물 목록 표시
+    // ==========================================
+
     data.forEach(post => {
 
       const div =
@@ -735,65 +727,93 @@
         "post";
 
 
-      // 사진만 표시
-      if (post.image_url) {
+      const author =
+        escapeHtml(
+          post.author_name || "익명"
+        );
 
-        div.innerHTML = `
+      const title =
+        escapeHtml(
+          post.title || "제목 없음"
+        );
 
-          <img
-            src="${escapeAttribute(post.image_url)}"
-            alt="게시물 이미지"
+      const content =
+        escapeHtml(
+          post.content || "내용 없음"
+        );
+
+      const date =
+        post.created_at
+          ? new Date(
+              post.created_at
+            ).toLocaleString(
+              "ko-KR"
+            )
+          : "";
+
+
+      const imageHTML =
+        post.image_url
+
+          ? `
+              <img
+                src="${escapeAttribute(post.image_url)}"
+                alt="게시물 이미지"
+              >
+            `
+
+          : `
+              <div class="post-no-image">
+                사진 없음
+              </div>
+            `;
+
+
+      div.innerHTML = `
+
+        ${imageHTML}
+
+        <div class="post-author">
+          👤 ${author}
+        </div>
+
+        <div class="post-title">
+          ${title}
+        </div>
+
+        <div class="post-content">
+          ${content}
+        </div>
+
+        ${
+          date
+            ? `
+              <div class="post-date">
+                ${date}
+              </div>
+            `
+            : ""
+        }
+
+        <div class="post-buttons">
+
+          <button
+            class="edit"
+            onclick="editPost('${post.id}')"
           >
+            수정
+          </button>
 
-          <div class="post-buttons">
+          <button
+            class="delete"
+            onclick="deletePost('${post.id}')"
+          >
+            삭제
+          </button>
 
-            <button
-              class="edit"
-              onclick="editPost('${post.id}')"
-            >
-              수정
-            </button>
+        </div>
 
-            <button
-              class="delete"
-              onclick="deletePost('${post.id}')"
-            >
-              삭제
-            </button>
-
-          </div>
-
-        `;
-
-      } else {
-
-        div.innerHTML = `
-
-          <div class="post-no-image">
-            사진 없음
-          </div>
-
-          <div class="post-buttons">
-
-            <button
-              class="edit"
-              onclick="editPost('${post.id}')"
-            >
-              수정
-            </button>
-
-            <button
-              class="delete"
-              onclick="deletePost('${post.id}')"
-            >
-              삭제
-            </button>
-
-          </div>
-
-        `;
-
-      }
+      `;
 
 
       list.appendChild(div);
@@ -892,218 +912,207 @@
       <textarea
         id="edit-content-${id}"
         placeholder="내용"
-      >${escapeHtml(post.content || "")}</textarea>
+      >${escapeHtml(post.content || "")}</textarea>  <button
+    class="save"
+    onclick="savePost('${id}')"
+  >
+    저장
+  </button>
 
-      <button
-        class="save"
-        onclick="savePost('${id}')"
-      >
-        저장
-      </button>
+  <button
+    class="cancel"
+    onclick="loadPosts()"
+  >
+    취소
+  </button>
 
-      <button
-        class="cancel"
-        onclick="loadPosts()"
-      >
-        취소
-      </button>
+`;
 
-    `;
+}
 
+// ==========================================
+// 수정 저장
+// ==========================================
+
+async function savePost(id) {
+
+const title =
+  document
+    .getElementById(
+      "edit-title-" + id
+    )
+    .value
+    .trim();
+
+const content =
+  document
+    .getElementById(
+      "edit-content-" + id
+    )
+    .value
+    .trim();
+
+
+if (!title) {
+
+  alert("제목을 입력해줘.");
+
+  return;
+
+}
+
+
+if (!content) {
+
+  alert("내용을 입력해줘.");
+
+  return;
+
+}
+
+
+const { error } =
+  await supabaseClient
+    .from("posts")
+    .update({
+
+      title: title,
+      content: content
+
+    })
+    .eq(
+      "id",
+      id
+    );
+
+
+if (error) {
+
+  alert(
+    "❌ 수정 실패\n" +
+    error.message
+  );
+
+  return;
+
+}
+
+
+alert("✅ 수정 완료!");
+
+loadPosts();
+
+}
+
+// ==========================================
+// 게시물 삭제
+// ==========================================
+
+async function deletePost(id) {
+
+const ok =
+  confirm(
+    "정말 이 게시물을 삭제할까?"
+  );
+
+
+if (!ok) return;
+
+
+const { error } =
+  await supabaseClient
+    .from("posts")
+    .delete()
+    .eq(
+      "id",
+      id
+    );
+
+
+if (error) {
+
+  alert(
+    "❌ 삭제 실패\n" +
+    error.message
+  );
+
+  return;
+
+}
+
+
+alert("✅ 삭제 완료!");
+
+loadPosts();
+
+}
+
+// ==========================================
+// 로그아웃
+// ==========================================
+
+async function logout() {
+
+await supabaseClient.auth.signOut();
+
+showLogin();
+
+}
+
+// ==========================================
+// 안전한 HTML 처리
+// ==========================================
+
+function escapeHtml(value) {
+
+return String(value ?? "")
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#039;");
+
+}
+
+function escapeAttribute(value) {
+
+return escapeHtml(value);
+
+}
+
+// ==========================================
+// 로그인 상태 확인
+// ==========================================
+
+async function checkUser() {
+
+const {
+  data: {
+    session
   }
+} =
+  await supabaseClient
+    .auth
+    .getSession();
 
 
-  // ==========================================
-  // 수정 저장
-  // ==========================================
+if (session) {
 
-  async function savePost(id) {
+  showAdmin();
 
-    const title =
-      document
-        .getElementById(
-          "edit-title-" + id
-        )
-        .value
-        .trim();
+} else {
 
-    const content =
-      document
-        .getElementById(
-          "edit-content-" + id
-        )
-        .value
-        .trim();
+  showLogin();
 
+}
 
-    if (!title) {
+}
 
-      alert("제목을 입력해줘.");
+// ==========================================
+// 시작
+// ==========================================
 
-      return;
+checkUser();
 
-    }
-
-
-    if (!content) {
-
-      alert("내용을 입력해줘.");
-
-      return;
-
-    }
-
-
-    const { error } =
-      await supabaseClient
-        .from("posts")
-        .update({
-
-          title: title,
-          content: content
-
-        })
-        .eq(
-          "id",
-          id
-        );
-
-
-    if (error) {
-
-      alert(
-        "❌ 수정 실패\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    alert("✅ 수정 완료!");
-
-    loadPosts();
-
-  }
-
-
-  // ==========================================
-  // 게시물 삭제
-  // ==========================================
-
-  async function deletePost(id) {
-
-    const ok =
-      confirm(
-        "정말 이 게시물을 삭제할까?"
-      );
-
-
-    if (!ok) return;
-
-
-    const { error } =
-      await supabaseClient
-        .from("posts")
-        .delete()
-        .eq(
-          "id",
-          id
-        );
-
-
-    if (error) {
-
-      alert(
-        "❌ 삭제 실패\n" +
-        error.message
-      );
-
-      return;
-
-    }
-
-
-    alert("✅ 삭제 완료!");
-
-    loadPosts();
-
-  }
-
-
-  // ==========================================
-  // 로그아웃
-  // ==========================================
-
-  async function logout() {
-
-    await supabaseClient.auth.signOut();
-
-    showLogin();
-
-  }
-
-
-  // ==========================================
-  // 안전한 HTML 처리
-  // ==========================================
-
-  function escapeHtml(value) {
-
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-
-  }
-
-
-  function escapeAttribute(value) {
-
-    return escapeHtml(value);
-
-  }
-
-
-  // ==========================================
-  // 로그인 상태 확인
-  // ==========================================
-
-  async function checkUser() {
-
-    const {
-      data: {
-        session
-      }
-    } =
-      await supabaseClient
-        .auth
-        .getSession();
-
-
-    if (session) {
-
-      showAdmin();
-
-    } else {
-
-      showLogin();
-
-    }
-
-  }
-
-
-  // ==========================================
-  // 시작
-  // ==========================================
-
-  checkUser();
-
-</script>
-
-</body>
+</script></body>
 </html>
