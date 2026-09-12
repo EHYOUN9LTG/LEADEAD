@@ -13,39 +13,24 @@
       box-sizing: border-box;
     }
 
-    html {
+    html,
+    body {
+      margin: 0;
+      padding: 0;
       min-height: 100%;
     }
 
     body {
-      margin: 0;
-      min-height: 100vh;
       font-family: Arial, sans-serif;
-      color: white;
-
-      background-color: #0b0b0d;
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-
-      transition: background-image 0.5s ease;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.38);
-      z-index: -1;
+      background: #ffffff;
+      color: #111111;
     }
 
     header {
       padding: 30px 20px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(255,255,255,0.12);
+      background: #ffffff;
+      border-bottom: 1px solid #eeeeee;
     }
 
     header h1 {
@@ -56,7 +41,7 @@
 
     header p {
       margin: 8px 0 0;
-      color: #bbb;
+      color: #777777;
     }
 
     .container {
@@ -67,17 +52,17 @@
     }
 
     .card {
-      background: rgba(20, 20, 24, 0.88);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
       border-radius: 18px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
     }
 
     h2 {
       margin-top: 0;
+      color: #111111;
     }
 
     input,
@@ -85,17 +70,18 @@
       width: 100%;
       padding: 14px;
       margin: 7px 0;
-      border: 1px solid #333;
+      border: 1px solid #dddddd;
       border-radius: 12px;
-      background: #111115;
-      color: white;
+      background: #fafafa;
+      color: #111111;
       font-size: 15px;
       outline: none;
     }
 
     input:focus,
     textarea:focus {
-      border-color: #777;
+      border-color: #888888;
+      background: #ffffff;
     }
 
     textarea {
@@ -114,24 +100,25 @@
       cursor: pointer;
     }
 
-    .login {
-      background: white;
-      color: black;
+    button:active {
+      transform: scale(0.98);
     }
 
+    .login,
     .upload {
-      background: white;
-      color: black;
+      background: #111111;
+      color: white;
     }
 
     .refresh {
-      background: #333;
-      color: white;
+      background: #eeeeee;
+      color: #111111;
+      margin-bottom: 8px;
     }
 
     .edit {
-      background: #292929;
-      color: white;
+      background: #eeeeee;
+      color: #111111;
     }
 
     .save {
@@ -140,7 +127,7 @@
     }
 
     .cancel {
-      background: #555;
+      background: #777777;
       color: white;
     }
 
@@ -150,12 +137,8 @@
     }
 
     .logout {
-      background: #555;
-      color: white;
-    }
-
-    button:active {
-      transform: scale(0.98);
+      background: #eeeeee;
+      color: #111111;
     }
 
     .hidden {
@@ -164,60 +147,73 @@
 
     .status {
       margin-top: 12px;
-      padding: 12px;
+      padding: 10px;
       border-radius: 10px;
-      background: rgba(255,255,255,0.07);
-      color: #ddd;
+      background: #f5f5f5;
+      color: #555555;
       word-break: break-word;
     }
 
+    /*
+      게시물 목록
+    */
+
     .post {
-      background: rgba(10,10,12,0.8);
-      border: 1px solid #292929;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
       border-radius: 15px;
-      padding: 15px;
+      padding: 12px;
       margin-top: 15px;
     }
 
     .post img {
+      display: block;
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #f5f5f5;
+    }
+
+    .post-no-image {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      border-radius: 12px;
+      color: #999999;
+      margin-bottom: 10px;
+    }
+
+    .post-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .post-buttons button {
+      flex: 1;
+      margin-top: 0;
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      display: none;
+      margin-top: 10px;
+      border-radius: 12px;
+    }
+
+    .edit-image {
+      display: block;
       width: 100%;
       max-height: 300px;
       object-fit: cover;
       border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .post h3 {
-      margin: 5px 0 8px;
-    }
-
-    .post p {
-      color: #ccc;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-
-    .date {
-      font-size: 12px;
-      color: #888;
       margin-bottom: 10px;
-    }
-
-    .row-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .row-buttons button {
-      flex: 1;
-    }
-
-    .preview {
-      max-width: 100%;
-      max-height: 250px;
-      display: none;
-      margin-top: 10px;
-      border-radius: 12px;
     }
 
     @media (max-width: 600px) {
@@ -274,7 +270,7 @@
   <!-- 관리자 -->
   <section id="adminBox" class="hidden">
 
-    <!-- 새 글 -->
+    <!-- 새 게시물 -->
     <div class="card">
 
       <h2>새 게시물 작성</h2>
@@ -300,27 +296,41 @@
       <img
         id="imagePreview"
         class="preview"
+        alt="미리보기"
       >
 
-      <button class="upload" onclick="uploadPost()">
+      <button
+        class="upload"
+        onclick="uploadPost()"
+      >
         게시물 업로드
       </button>
 
-      <div id="uploadStatus" class="status"></div>
+      <div
+        id="uploadStatus"
+        class="status"
+      ></div>
 
     </div>
 
 
-    <!-- 게시물 관리 -->
+    <!-- 게시물 목록 -->
     <div class="card">
 
-      <h2>게시물 관리</h2>
+      <h2>게시물 목록</h2>
 
-      <button class="refresh" onclick="loadPosts()">
+      <!-- 새로고침 -->
+      <button
+        class="refresh"
+        onclick="loadPosts()"
+      >
         🔄 새로고침
       </button>
 
-      <div id="postStatus" class="status"></div>
+      <div
+        id="postStatus"
+        class="status"
+      ></div>
 
       <div id="postList"></div>
 
@@ -330,7 +340,10 @@
     <!-- 로그아웃 -->
     <div class="card">
 
-      <button class="logout" onclick="logout()">
+      <button
+        class="logout"
+        onclick="logout()"
+      >
         로그아웃
       </button>
 
@@ -344,7 +357,7 @@
 <script>
 
   // ==========================================
-  // Supabase
+  // Supabase 설정
   // ==========================================
 
   const SUPABASE_URL =
@@ -358,79 +371,6 @@
       SUPABASE_URL,
       SUPABASE_KEY
     );
-
-
-  // ==========================================
-  // 랜덤 배경
-  // ==========================================
-
-  const backgroundGroups = {
-
-    stellive: [
-      "KANNA.webp",
-      "HEBI.webp",
-      "HUYA.webp",
-      "LIZE.webp",
-      "TABI.webp",
-      "MASHIRO.webp",
-      "HINA.webp",
-      "BUKI.webp",
-      "LIN.webp",
-      "NANA.webp",
-      "RIKO.webp",
-      "YUNI.jpeg"
-    ],
-
-    isegye: [
-      "GOSEGU.webp",
-      "JURURU.webp",
-      "VICHAN.webp",
-      "INE.webp",
-      "JINGBURGUR.webp",
-      "LILPA.webp",
-      "ISEGYE IDOL.png"
-    ],
-
-    lotte: [
-      "LOTTE.jpeg",
-      "LOTTE1.jpeg",
-      "LOTTE2.jpeg"
-    ]
-
-  };
-
-
-  function setRandomBackground() {
-
-    const groups =
-      Object.values(backgroundGroups);
-
-    const selectedGroup =
-      groups[
-        Math.floor(
-          Math.random() * groups.length
-        )
-      ];
-
-    const selectedImage =
-      selectedGroup[
-        Math.floor(
-          Math.random() * selectedGroup.length
-        )
-      ];
-
-    const imagePath =
-      "assets/background/" +
-      encodeURIComponent(selectedImage);
-
-    document.body.style.backgroundImage =
-      `url("${imagePath}")`;
-
-  }
-
-
-  // 페이지 열릴 때 랜덤 배경
-  setRandomBackground();
 
 
   // ==========================================
@@ -485,6 +425,7 @@
     const status =
       document.getElementById("loginStatus");
 
+
     if (!email || !password) {
 
       status.textContent =
@@ -494,11 +435,12 @@
 
     }
 
+
     status.textContent =
       "로그인 중...";
 
 
-    const { data, error } =
+    const { error } =
       await supabaseClient.auth.signInWithPassword({
 
         email: email,
@@ -533,11 +475,13 @@
   function previewImage() {
 
     const file =
-      document.getElementById("image")
+      document
+        .getElementById("image")
         .files[0];
 
     const preview =
-      document.getElementById("imagePreview");
+      document
+        .getElementById("imagePreview");
 
 
     if (!file) {
@@ -549,11 +493,11 @@
     }
 
 
-    const url =
+    preview.src =
       URL.createObjectURL(file);
 
-    preview.src = url;
-    preview.style.display = "block";
+    preview.style.display =
+      "block";
 
   }
 
@@ -582,7 +526,8 @@
         .files[0];
 
     const status =
-      document.getElementById("uploadStatus");
+      document
+        .getElementById("uploadStatus");
 
 
     if (!title) {
@@ -612,7 +557,7 @@
     let imageUrl = null;
 
 
-    // 이미지가 있으면 Storage 업로드
+    // 이미지 업로드
     if (file) {
 
       const extension =
@@ -629,12 +574,13 @@
         "." +
         extension;
 
-
       const filePath =
         "posts/" + fileName;
 
 
-      const { error: uploadError } =
+      const {
+        error: uploadError
+      } =
         await supabaseClient
           .storage
           .from("images")
@@ -668,7 +614,7 @@
     }
 
 
-    // 게시물 DB 저장
+    // 게시물 저장
     const { error } =
       await supabaseClient
         .from("posts")
@@ -733,10 +679,13 @@
 
 
     status.textContent =
-      "게시물 불러오는 중...";
+      "불러오는 중...";
 
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await supabaseClient
         .from("posts")
         .select("*")
@@ -770,7 +719,7 @@
     if (data.length === 0) {
 
       list.innerHTML =
-        "<p>게시물이 아직 없어.</p>";
+        '<p style="color:#999;">게시물이 아직 없어.</p>';
 
       return;
 
@@ -782,64 +731,69 @@
       const div =
         document.createElement("div");
 
-      div.className = "post";
+      div.className =
+        "post";
 
-      const image =
-        post.image_url
-          ? `
-            <img
-              src="${escapeAttribute(post.image_url)}"
-              alt=""
+
+      // 사진만 표시
+      if (post.image_url) {
+
+        div.innerHTML = `
+
+          <img
+            src="${escapeAttribute(post.image_url)}"
+            alt="게시물 이미지"
+          >
+
+          <div class="post-buttons">
+
+            <button
+              class="edit"
+              onclick="editPost('${post.id}')"
             >
-          `
-          : "";
+              수정
+            </button>
 
+            <button
+              class="delete"
+              onclick="deletePost('${post.id}')"
+            >
+              삭제
+            </button>
 
-      const date =
-        post.created_at
-          ? new Date(
-              post.created_at
-            ).toLocaleString(
-              "ko-KR"
-            )
-          : "";
+          </div>
 
+        `;
 
-      div.innerHTML = `
+      } else {
 
-        ${image}
+        div.innerHTML = `
 
-        <div class="date">
-          ${escapeHtml(date)}
-        </div>
+          <div class="post-no-image">
+            사진 없음
+          </div>
 
-        <h3>
-          ${escapeHtml(post.title)}
-        </h3>
+          <div class="post-buttons">
 
-        <p>
-          ${escapeHtml(post.content)}
-        </p>
+            <button
+              class="edit"
+              onclick="editPost('${post.id}')"
+            >
+              수정
+            </button>
 
-        <div class="row-buttons">
+            <button
+              class="delete"
+              onclick="deletePost('${post.id}')"
+            >
+              삭제
+            </button>
 
-          <button
-            class="edit"
-            onclick="editPost('${post.id}')"
-          >
-            수정
-          </button>
+          </div>
 
-          <button
-            class="delete"
-            onclick="deletePost('${post.id}')"
-          >
-            삭제
-          </button>
+        `;
 
-        </div>
-
-      `;
+      }
 
 
       list.appendChild(div);
@@ -855,7 +809,10 @@
 
   async function editPost(id) {
 
-    const { data: post, error } =
+    const {
+      data: post,
+      error
+    } =
       await supabaseClient
         .from("posts")
         .select("*")
@@ -918,8 +875,9 @@
         post.image_url
           ? `
             <img
+              class="edit-image"
               src="${escapeAttribute(post.image_url)}"
-              alt=""
+              alt="게시물 이미지"
             >
           `
           : ""
@@ -1088,7 +1046,7 @@
 
 
   // ==========================================
-  // HTML 문자 안전 처리
+  // 안전한 HTML 처리
   // ==========================================
 
   function escapeHtml(value) {
@@ -1139,7 +1097,10 @@
   }
 
 
+  // ==========================================
   // 시작
+  // ==========================================
+
   checkUser();
 
 </script>
