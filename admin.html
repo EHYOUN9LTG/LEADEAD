@@ -74,6 +74,7 @@
       font-size: 16px;
       font-weight: bold;
       margin-top: 5px;
+      cursor: pointer;
     }
 
     button:disabled {
@@ -84,11 +85,23 @@
       background: #777;
     }
 
+    .delete {
+      background: #d00;
+      margin-top: 12px;
+    }
+
+    .refresh {
+      background: #444;
+      margin-bottom: 15px;
+    }
+
     .hidden {
       display: none;
     }
 
-    #status {
+    #status,
+    #loginStatus,
+    #postStatus {
       text-align: center;
       margin-top: 15px;
       font-weight: bold;
@@ -98,6 +111,41 @@
     .info {
       color: #666;
       font-size: 14px;
+    }
+
+    .post {
+      border: 1px solid #eee;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .post h3 {
+      margin: 0 0 10px;
+    }
+
+    .post p {
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .post img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .date {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 20px 0;
     }
   </style>
 </head>
@@ -121,6 +169,7 @@
     </p>
 
     <label>이메일</label>
+
     <input
       id="email"
       type="email"
@@ -129,6 +178,7 @@
     >
 
     <label>비밀번호</label>
+
     <input
       id="password"
       type="password"
@@ -148,11 +198,13 @@
   <!-- 관리자 화면 -->
   <section id="adminBox" class="hidden">
 
+    <!-- 새 게시물 -->
     <div class="card">
 
       <h2>✏️ 새 게시물</h2>
 
       <label>제목</label>
+
       <input
         id="title"
         type="text"
@@ -160,12 +212,14 @@
       >
 
       <label>내용</label>
+
       <textarea
         id="content"
         placeholder="내용을 입력하세요"
       ></textarea>
 
       <label>사진</label>
+
       <input
         id="image"
         type="file"
@@ -180,6 +234,27 @@
 
     </div>
 
+
+    <!-- 게시물 관리 -->
+    <div class="card">
+
+      <h2>📋 게시물 관리</h2>
+
+      <button
+        id="refreshButton"
+        class="refresh"
+      >
+        🔄 게시물 새로고침
+      </button>
+
+      <div id="postStatus"></div>
+
+      <div id="postList"></div>
+
+    </div>
+
+
+    <!-- 로그아웃 -->
     <div class="card">
 
       <button
@@ -220,6 +295,7 @@
   // =========================
 
   function showAdmin() {
+
     document
       .getElementById("loginBox")
       .classList.add("hidden");
@@ -227,10 +303,13 @@
     document
       .getElementById("adminBox")
       .classList.remove("hidden");
+
+    loadPosts();
   }
 
 
   function showLogin() {
+
     document
       .getElementById("adminBox")
       .classList.add("hidden");
@@ -284,8 +363,10 @@
 
 
       if (!email || !password) {
+
         status.textContent =
           "이메일과 비밀번호를 입력해줘.";
+
         return;
       }
 
@@ -359,19 +440,25 @@
 
 
     if (!title) {
+
       status.textContent =
         "제목을 입력해줘.";
+
       return;
     }
 
+
     if (!content) {
+
       status.textContent =
         "내용을 입력해줘.";
+
       return;
     }
 
 
     button.disabled = true;
+
     status.textContent =
       "업로드 중...";
 
@@ -381,10 +468,7 @@
       let imageUrl = null;
 
 
-      // -------------------------
       // 사진 업로드
-      // -------------------------
-
       if (file) {
 
         const safeName =
@@ -430,10 +514,7 @@
       }
 
 
-      // -------------------------
-      // 게시물 DB 저장
-      // -------------------------
-
+      // DB 저장
       const {
         error: insertError
       } =
@@ -468,6 +549,10 @@
         .value = "";
 
 
+      // 목록 새로고침
+      loadPosts();
+
+
     } catch (error) {
 
       console.error(error);
@@ -485,6 +570,188 @@
 
 
   // =========================
+  // 게시물 불러오기
+  // =========================
+
+  async function loadPosts() {
+
+    const list =
+      document
+        .getElementById("postList");
+
+    const status =
+      document
+        .getElementById("postStatus");
+
+
+    status.textContent =
+      "게시물 불러오는 중...";
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("posts")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+    if (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ 불러오기 실패: " +
+        error.message;
+
+      return;
+    }
+
+
+    status.textContent = "";
+
+    list.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+      list.innerHTML =
+        '<div class="empty">게시물이 아직 없어.</div>';
+
+      return;
+    }
+
+
+    data.forEach(post => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "post";
+
+
+      let html = "";
+
+      html +=
+        "<h3>" +
+        escapeHtml(post.title) +
+        "</h3>";
+
+
+      html +=
+        "<p>" +
+        escapeHtml(post.content) +
+        "</p>";
+
+
+      if (post.image_url) {
+
+        html +=
+          '<img src="' +
+          post.image_url +
+          '" alt="게시물 이미지">';
+      }
+
+
+      if (post.created_at) {
+
+        html +=
+          '<div class="date">' +
+          new Date(post.created_at).toLocaleString("ko-KR") +
+          "</div>";
+      }
+
+
+      html +=
+        '<button class="delete" onclick="deletePost(\'' +
+        post.id +
+        '\')">' +
+        "🗑️ 이 게시물 삭제" +
+        "</button>";
+
+
+      div.innerHTML = html;
+
+      list.appendChild(div);
+
+    });
+
+  }
+
+
+  // =========================
+  // 게시물 삭제
+  // =========================
+
+  async function deletePost(id) {
+
+    const confirmed =
+      confirm(
+        "정말 이 게시물을 삭제할까?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    const status =
+      document
+        .getElementById("postStatus");
+
+
+    status.textContent =
+      "삭제 중...";
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("posts")
+        .delete()
+        .eq("id", id);
+
+
+    if (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ 삭제 실패: " +
+        error.message;
+
+      return;
+    }
+
+
+    status.textContent =
+      "🗑️ 삭제 완료!";
+
+
+    loadPosts();
+
+  }
+
+
+  // =========================
+  // 새로고침
+  // =========================
+
+  document
+    .getElementById("refreshButton")
+    .addEventListener(
+      "click",
+      loadPosts
+    );
+
+
+  // =========================
   // 로그아웃
   // =========================
 
@@ -497,6 +764,25 @@
       showLogin();
 
     });
+
+
+  // =========================
+  // HTML 문자 보호
+  // =========================
+
+  function escapeHtml(text) {
+
+    if (!text) {
+      return "";
+    }
+
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
 
   // 시작
