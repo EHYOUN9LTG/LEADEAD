@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LEADEAD 관리자</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      color: #111;
+    }
+
+    header {
+      background: #000;
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      letter-spacing: 3px;
+    }
+
+    main {
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 18px;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #000;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>LEADEAD</h1>
+  <p>관리자 페이지</p>
+</header>
+
+<main>
+
+  <section class="card">
+
+    <h2>새 게시물 작성</h2>
+
+    <label for="title">제목</label>
+    <input
+      id="title"
+      type="text"
+      placeholder="제목을 입력하세요"
+    >
+
+    <label for="content">내용</label>
+    <textarea
+      id="content"
+      placeholder="내용을 입력하세요"
+    ></textarea>
+
+    <label for="image">사진</label>
+    <input
+      id="image"
+      type="file"
+      accept="image/*"
+    >
+
+    <button id="uploadButton">
+      게시물 올리기
+    </button>
+
+    <div id="status"></div>
+
+  </section>
+
+</main>
+
+<script>
+
+  // =========================
+  // Supabase
+  // =========================
+
+  const SUPABASE_URL =
+    "https://njmohfznypdcazdhbuul.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_tcRopRjkw1iAPO0r5ty86Q_YZGo-VXq";
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  // =========================
+  // 게시물 업로드
+  // =========================
+
+  document
+    .getElementById("uploadButton")
+    .addEventListener("click", uploadPost);
+
+
+  async function uploadPost() {
+
+    const button =
+      document.getElementById("uploadButton");
+
+    const status =
+      document.getElementById("status");
+
+    const title =
+      document.getElementById("title")
+        .value
+        .trim();
+
+    const content =
+      document.getElementById("content")
+        .value
+        .trim();
+
+    const file =
+      document.getElementById("image")
+        .files[0];
+
+
+    if (!title) {
+      status.textContent =
+        "제목을 입력해줘!";
+      return;
+    }
+
+
+    if (!content) {
+      status.textContent =
+        "내용을 입력해줘!";
+      return;
+    }
+
+
+    button.disabled = true;
+
+    status.textContent =
+      "업로드 중...";
+
+
+    try {
+
+      let imageUrl = null;
+
+
+      // -------------------------
+      // 사진 업로드
+      // -------------------------
+
+      if (file) {
+
+        const fileName =
+          Date.now() + "-" +
+          file.name.replace(
+            /[^a-zA-Z0-9._-]/g,
+            "_"
+          );
+
+
+        const { error: uploadError } =
+          await supabaseClient
+            .storage
+            .from("images")
+            .upload(
+              fileName,
+              file
+            );
+
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+
+        const { data } =
+          supabaseClient
+            .storage
+            .from("images")
+            .getPublicUrl(fileName);
+
+
+        imageUrl =
+          data.publicUrl;
+      }
+
+
+      // -------------------------
+      // DB에 게시물 저장
+      // -------------------------
+
+      const { error: insertError } =
+        await supabaseClient
+          .from("posts")
+          .insert({
+            title: title,
+            content: content,
+            image_url: imageUrl
+          });
+
+
+      if (insertError) {
+        throw insertError;
+      }
+
+
+      status.textContent =
+        "🎉 게시물이 올라갔어!";
+
+
+      document
+        .getElementById("title")
+        .value = "";
+
+      document
+        .getElementById("content")
+        .value = "";
+
+      document
+        .getElementById("image")
+        .value = "";
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      status.textContent =
+        "❌ 업로드 실패: " +
+        error.message;
+
+    } finally {
+
+      button.disabled = false;
+
+    }
+
+  }
+
+</script>
+
+</body>
+</html>
