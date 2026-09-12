@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>LEADEAD</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -20,14 +21,13 @@
     }
 
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
       background: #ffffff;
       color: #111;
     }
 
     /* ==============================
-       랜덤 배경 사진
+       랜덤 배경
        ============================== */
 
     #backgroundPhoto {
@@ -47,15 +47,18 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      opacity: 0.18;
+      opacity: 0.16;
     }
 
-    /* 실제 내용은 배경보다 위 */
     header,
     main {
       position: relative;
       z-index: 1;
     }
+
+    /* ==============================
+       헤더
+       ============================== */
 
     header {
       background: rgba(255, 255, 255, 0.94);
@@ -77,6 +80,10 @@
       color: #666;
     }
 
+    /* ==============================
+       메인
+       ============================== */
+
     main {
       max-width: 700px;
       margin: 25px auto;
@@ -84,13 +91,17 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 18px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       backdrop-filter: blur(6px);
     }
+
+    /* ==============================
+       환영
+       ============================== */
 
     .welcome {
       text-align: center;
@@ -99,6 +110,82 @@
     .welcome h2 {
       margin-top: 0;
     }
+
+    /* ==============================
+       업로드
+       ============================== */
+
+    .upload-box h2 {
+      margin-top: 0;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      margin-top: 8px;
+      border: 1px solid #dddddd;
+      border-radius: 11px;
+      background: #fafafa;
+      color: #111;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #888;
+      background: white;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      background: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 11px;
+      background: #111;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f5f5f5;
+      color: #555;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    /* ==============================
+       게시물
+       ============================== */
 
     #posts {
       display: flex;
@@ -125,6 +212,12 @@
       padding: 18px;
     }
 
+    .author {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
     .post h3 {
       margin: 0 0 10px;
       font-size: 21px;
@@ -138,7 +231,7 @@
 
     .date {
       margin-top: 14px;
-      color: #888;
+      color: #999;
       font-size: 12px;
     }
 
@@ -165,8 +258,7 @@
       }
 
       #backgroundPhoto img {
-        object-fit: contain;
-        opacity: 0.14;
+        opacity: 0.12;
       }
 
     }
@@ -175,10 +267,7 @@
 
 <body>
 
-  <!-- ==============================
-       랜덤 배경 사진
-       ============================== -->
-
+  <!-- 랜덤 배경 -->
   <div id="backgroundPhoto">
     <img id="randomBackground" alt="">
   </div>
@@ -192,15 +281,69 @@
 
   <main>
 
+    <!-- 환영 -->
     <section class="card welcome">
+
       <h2>👋 환영합니다</h2>
 
       <p>
         LEADEAD에 기록된 사진과 이야기를 만나보세요.
       </p>
+
     </section>
 
 
+    <!-- 게시물 업로드 -->
+    <section class="card upload-box">
+
+      <h2>📷 게시물 올리기</h2>
+
+      <input
+        id="authorName"
+        type="text"
+        placeholder="이름"
+        maxlength="30"
+      >
+
+      <input
+        id="title"
+        type="text"
+        placeholder="제목"
+        maxlength="100"
+      >
+
+      <textarea
+        id="content"
+        placeholder="내용을 입력하세요."
+      ></textarea>
+
+      <input
+        id="image"
+        type="file"
+        accept="image/*"
+        onchange="previewImage()"
+      >
+
+      <img
+        id="imagePreview"
+        class="preview"
+        alt="사진 미리보기"
+      >
+
+      <button onclick="uploadPost()">
+        게시물 올리기
+      </button>
+
+      <div
+        id="uploadStatus"
+        class="status"
+        style="display:none;"
+      ></div>
+
+    </section>
+
+
+    <!-- 게시물 -->
     <section id="posts">
 
       <div class="card empty">
@@ -214,9 +357,26 @@
 
   <script>
 
-    // ==============================
-    // 랜덤 배경 이미지
-    // ==============================
+    // ==========================================
+    // Supabase
+    // ==========================================
+
+    const SUPABASE_URL =
+      "https://njmohfznypdcazdhbuul.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_tcRopRjkw1iAPO0r5ty86Q_YZGo-VXq";
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    // ==========================================
+    // 랜덤 배경
+    // ==========================================
 
     const backgroundGroups = {
 
@@ -259,8 +419,6 @@
       const groups =
         Object.values(backgroundGroups);
 
-
-      // 3개 그룹 중 하나 선택
       const selectedGroup =
         groups[
           Math.floor(
@@ -268,8 +426,6 @@
           )
         ];
 
-
-      // 선택된 그룹에서 사진 하나 선택
       const selectedImage =
         selectedGroup[
           Math.floor(
@@ -278,53 +434,306 @@
           )
         ];
 
-
       const imagePath =
         "assets/background/" +
         encodeURIComponent(selectedImage);
 
-
-      const background =
-        document.getElementById(
-          "randomBackground"
-        );
-
-
-      background.src = imagePath;
-
-
-      console.log(
-        "랜덤 배경:",
-        selectedImage
-      );
+      document
+        .getElementById("randomBackground")
+        .src = imagePath;
 
     }
 
 
-    // 페이지 열 때 랜덤 사진
     setRandomBackground();
 
 
-    // ==============================
-    // Supabase 설정
-    // ==============================
+    // ==========================================
+    // 이름 기억
+    // ==========================================
 
-    const SUPABASE_URL =
-      "https://njmohfznypdcazdhbuul.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_tcRopRjkw1iAPO0r5ty86Q_YZGo-VXq";
-
-    const supabaseClient =
-      supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+    const savedName =
+      localStorage.getItem(
+        "leadead_author_name"
       );
 
 
-    // ==============================
+    if (savedName) {
+
+      document
+        .getElementById("authorName")
+        .value = savedName;
+
+    }
+
+
+    // ==========================================
+    // 이미지 미리보기
+    // ==========================================
+
+    function previewImage() {
+
+      const file =
+        document
+          .getElementById("image")
+          .files[0];
+
+      const preview =
+        document
+          .getElementById("imagePreview");
+
+
+      if (!file) {
+
+        preview.style.display = "none";
+
+        return;
+
+      }
+
+
+      preview.src =
+        URL.createObjectURL(file);
+
+      preview.style.display =
+        "block";
+
+    }
+
+
+    // ==========================================
+    // 게시물 업로드
+    // ==========================================
+
+    async function uploadPost() {
+
+      const authorName =
+        document
+          .getElementById("authorName")
+          .value
+          .trim();
+
+      const title =
+        document
+          .getElementById("title")
+          .value
+          .trim();
+
+      const content =
+        document
+          .getElementById("content")
+          .value
+          .trim();
+
+      const file =
+        document
+          .getElementById("image")
+          .files[0];
+
+      const status =
+        document
+          .getElementById("uploadStatus");
+
+
+      status.style.display =
+        "block";
+
+
+      // 이름 확인
+      if (!authorName) {
+
+        status.textContent =
+          "❌ 이름을 입력해줘.";
+
+        return;
+
+      }
+
+
+      // 이름 기억
+      localStorage.setItem(
+        "leadead_author_name",
+        authorName
+      );
+
+
+      // 제목 확인
+      if (!title) {
+
+        status.textContent =
+          "❌ 제목을 입력해줘.";
+
+        return;
+
+      }
+
+
+      // 내용 확인
+      if (!content) {
+
+        status.textContent =
+          "❌ 내용을 입력해줘.";
+
+        return;
+
+      }
+
+
+      // 사진 확인
+      if (!file) {
+
+        status.textContent =
+          "❌ 사진을 선택해줘.";
+
+        return;
+
+      }
+
+
+      status.textContent =
+        "📤 업로드 중...";
+
+
+      // ========================================
+      // 이미지 업로드
+      // ========================================
+
+      const extension =
+        file.name
+          .split(".")
+          .pop()
+          .toLowerCase();
+
+
+      const fileName =
+        Date.now() +
+        "-" +
+        Math.random()
+          .toString(36)
+          .substring(2) +
+        "." +
+        extension;
+
+
+      const filePath =
+        "posts/" + fileName;
+
+
+      const {
+        error: uploadError
+      } =
+        await supabaseClient
+          .storage
+          .from("images")
+          .upload(
+            filePath,
+            file
+          );
+
+
+      if (uploadError) {
+
+        console.error(uploadError);
+
+        status.textContent =
+          "❌ 사진 업로드 실패: " +
+          uploadError.message;
+
+        return;
+
+      }
+
+
+      // ========================================
+      // 사진 URL
+      // ========================================
+
+      const {
+        data: publicData
+      } =
+        supabaseClient
+          .storage
+          .from("images")
+          .getPublicUrl(filePath);
+
+
+      const imageUrl =
+        publicData.publicUrl;
+
+
+      // ========================================
+      // 게시물 DB 저장
+      // ========================================
+
+      const {
+        error: insertError
+      } =
+        await supabaseClient
+          .from("posts")
+          .insert({
+
+            author_name: authorName,
+            title: title,
+            content: content,
+            image_url: imageUrl
+
+          });
+
+
+      if (insertError) {
+
+        console.error(insertError);
+
+        status.textContent =
+          "❌ 게시물 저장 실패: " +
+          insertError.message;
+
+        return;
+
+      }
+
+
+      // ========================================
+      // 완료
+      // ========================================
+
+      status.textContent =
+        "✅ 게시물이 올라갔어!";
+
+
+      // 제목/내용/사진만 초기화
+      document
+        .getElementById("title")
+        .value = "";
+
+      document
+        .getElementById("content")
+        .value = "";
+
+      document
+        .getElementById("image")
+        .value = "";
+
+      document
+        .getElementById("imagePreview")
+        .style.display = "none";
+
+
+      // 이름은 그대로 유지
+      document
+        .getElementById("authorName")
+        .value = authorName;
+
+
+      // 게시물 새로고침
+      loadPosts();
+
+    }
+
+
+    // ==========================================
     // 게시물 불러오기
-    // ==============================
+    // ==========================================
 
     async function loadPosts() {
 
@@ -360,10 +769,9 @@
         `;
 
         return;
+
       }
 
-
-      // 게시물이 없는 경우
 
       if (!data || data.length === 0) {
 
@@ -376,10 +784,9 @@
         `;
 
         return;
+
       }
 
-
-      // 게시물 표시
 
       postsContainer.innerHTML = "";
 
@@ -419,6 +826,12 @@
 
           <div class="post-content">
 
+            <div class="author">
+              👤 ${escapeHTML(
+                post.author_name || "익명"
+              )}
+            </div>
+
             <h3>
               ${escapeHTML(
                 post.title || "제목 없음"
@@ -451,9 +864,9 @@
     }
 
 
-    // ==============================
-    // 날짜 표시
-    // ==============================
+    // ==========================================
+    // 날짜
+    // ==========================================
 
     function formatDate(date) {
 
@@ -475,13 +888,13 @@
     }
 
 
-    // ==============================
-    // HTML 문자 안전 처리
-    // ==============================
+    // ==========================================
+    // HTML 안전 처리
+    // ==========================================
 
     function escapeHTML(text) {
 
-      return String(text)
+      return String(text ?? "")
         .replace(
           /&/g,
           "&amp;"
@@ -506,9 +919,9 @@
     }
 
 
-    // ==============================
+    // ==========================================
     // 시작
-    // ==============================
+    // ==========================================
 
     loadPosts();
 
