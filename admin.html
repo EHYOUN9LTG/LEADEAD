@@ -8,165 +8,209 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
-    body {
-      margin: 0;
-      background: #f5f5f5;
-      font-family: Arial, sans-serif;
-      color: #111;
-    }
+  body {
+    margin: 0;
+    background: #0b0b0d;
+    color: #f5f5f5;
+    font-family: Arial, sans-serif;
+  }
 
-    header {
-      background: #000;
-      color: white;
-      text-align: center;
-      padding: 25px 20px;
-    }
+  header {
+    background: linear-gradient(135deg, #000, #18181c);
+    color: white;
+    text-align: center;
+    padding: 35px 20px;
+    border-bottom: 1px solid #29292e;
+  }
 
-    header h1 {
-      margin: 0;
-      letter-spacing: 3px;
-    }
+  header h1 {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 5px;
+  }
 
-    main {
-      max-width: 650px;
-      margin: 25px auto;
-      padding: 0 16px;
-    }
+  header p {
+    margin: 8px 0 0;
+    color: #999;
+  }
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.08);
-    }
+  main {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 0 16px;
+  }
 
-    h2 {
-      margin-top: 0;
-    }
+  .card {
+    background: #151518;
+    border: 1px solid #29292e;
+    padding: 22px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.25);
+  }
 
-    input,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      margin: 7px 0 16px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-    }
+  h2 {
+    margin-top: 0;
+    font-size: 21px;
+  }
 
-    textarea {
-      min-height: 140px;
-      resize: vertical;
-    }
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #bbb;
+  }
 
-    button {
-      width: 100%;
-      padding: 14px;
-      border: 0;
-      border-radius: 10px;
-      background: #000;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      margin-top: 5px;
-      cursor: pointer;
-    }
+  input,
+  textarea {
+    width: 100%;
+    padding: 14px;
+    margin: 6px 0 17px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    background: #0d0d0f;
+    color: white;
+    font-size: 16px;
+    outline: none;
+  }
 
-    button:disabled {
-      opacity: .5;
-    }
+  input:focus,
+  textarea:focus {
+    border-color: #777;
+  }
 
-    .logout {
-      background: #777;
-    }
+  textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
 
-    .delete {
-      background: #d00;
-      margin-top: 12px;
-    }
+  input[type="file"] {
+    padding: 11px;
+  }
 
-    .edit {
-      background: #222;
-      margin-top: 12px;
-    }
+  button {
+    width: 100%;
+    padding: 14px;
+    border: 0;
+    border-radius: 12px;
+    background: white;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 6px;
+    cursor: pointer;
+    transition: .2s;
+  }
 
-    .save {
-      background: #087f23;
-    }
+  button:hover {
+    transform: translateY(-1px);
+    opacity: .9;
+  }
 
-    .cancel {
-      background: #777;
-    }
+  button:disabled {
+    opacity: .5;
+  }
 
-    .refresh {
-      background: #444;
-      margin-bottom: 15px;
-    }
+  .logout {
+    background: #29292e;
+    color: white;
+  }
 
-    .hidden {
-      display: none;
-    }
+  .delete {
+    background: #b91c1c;
+    color: white;
+    margin-top: 10px;
+  }
 
-    #status,
-    #loginStatus,
-    #postStatus {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-      line-height: 1.5;
-    }
+  .edit {
+    background: #303036;
+    color: white;
+    margin-top: 10px;
+  }
 
-    .info {
-      color: #666;
-      font-size: 14px;
-    }
+  .save {
+    background: #16a34a;
+    color: white;
+  }
 
-    .post {
-      border: 1px solid #eee;
-      border-radius: 14px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
+  .cancel {
+    background: #555;
+    color: white;
+  }
 
-    .post h3 {
-      margin: 0 0 10px;
-    }
+  .refresh {
+    background: #29292e;
+    color: white;
+    margin-bottom: 15px;
+  }
 
-    .post p {
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
+  .hidden {
+    display: none;
+  }
 
-    .post img {
-      width: 100%;
-      max-height: 350px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
+  #status,
+  #loginStatus,
+  #postStatus {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    line-height: 1.5;
+  }
 
-    .date {
-      color: #888;
-      font-size: 13px;
-      margin-top: 10px;
-    }
+  .info {
+    color: #888;
+    font-size: 14px;
+  }
 
-    .empty {
-      text-align: center;
-      color: #777;
-      padding: 20px 0;
-    }
+  .post {
+    background: #0d0d0f;
+    border: 1px solid #29292e;
+    border-radius: 16px;
+    padding: 17px;
+    margin-bottom: 15px;
+  }
 
-    .edit-label {
-      display: block;
-      font-weight: bold;
-      margin-top: 5px;
-    }
+  .post h3 {
+    margin: 0 0 10px;
+    font-size: 19px;
+  }
+
+  .post p {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #ccc;
+  }
+
+  .post img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+
+  .date {
+    color: #666;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .empty {
+    text-align: center;
+    color: #777;
+    padding: 25px 0;
+  }
+
+  .edit-label {
+    display: block;
+    font-weight: bold;
+    margin-top: 5px;
+  }
   </style>
 </head>
 
