@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>LEADEAD 관리자</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -23,8 +22,8 @@
     header {
       background: #000;
       color: white;
-      padding: 25px 20px;
       text-align: center;
+      padding: 25px 20px;
     }
 
     header h1 {
@@ -33,7 +32,7 @@
     }
 
     main {
-      max-width: 700px;
+      max-width: 650px;
       margin: 25px auto;
       padding: 0 16px;
     }
@@ -43,27 +42,25 @@
       padding: 20px;
       border-radius: 16px;
       margin-bottom: 20px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 12px rgba(0,0,0,.08);
     }
 
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: bold;
+    h2 {
+      margin-top: 0;
     }
 
     input,
     textarea {
       width: 100%;
       padding: 13px;
+      margin: 7px 0 16px;
       border: 1px solid #ddd;
       border-radius: 10px;
       font-size: 16px;
-      margin-bottom: 18px;
     }
 
     textarea {
-      min-height: 150px;
+      min-height: 140px;
       resize: vertical;
     }
 
@@ -76,17 +73,31 @@
       color: white;
       font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
+      margin-top: 5px;
     }
 
     button:disabled {
-      opacity: 0.5;
+      opacity: .5;
+    }
+
+    .logout {
+      background: #777;
+    }
+
+    .hidden {
+      display: none;
     }
 
     #status {
-      margin-top: 15px;
       text-align: center;
+      margin-top: 15px;
       font-weight: bold;
+      line-height: 1.5;
+    }
+
+    .info {
+      color: #666;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -100,44 +111,95 @@
 
 <main>
 
-  <section class="card">
+  <!-- 로그인 -->
+  <section id="loginBox" class="card">
 
-    <h2>새 게시물 작성</h2>
+    <h2>🔐 관리자 로그인</h2>
 
-    <label for="title">제목</label>
+    <p class="info">
+      Supabase에서 만든 관리자 계정으로 로그인하세요.
+    </p>
+
+    <label>이메일</label>
     <input
-      id="title"
-      type="text"
-      placeholder="제목을 입력하세요"
+      id="email"
+      type="email"
+      placeholder="이메일"
+      autocomplete="email"
     >
 
-    <label for="content">내용</label>
-    <textarea
-      id="content"
-      placeholder="내용을 입력하세요"
-    ></textarea>
-
-    <label for="image">사진</label>
+    <label>비밀번호</label>
     <input
-      id="image"
-      type="file"
-      accept="image/*"
+      id="password"
+      type="password"
+      placeholder="비밀번호"
+      autocomplete="current-password"
     >
 
-    <button id="uploadButton">
-      게시물 올리기
+    <button id="loginButton">
+      로그인
     </button>
 
-    <div id="status"></div>
+    <div id="loginStatus"></div>
+
+  </section>
+
+
+  <!-- 관리자 화면 -->
+  <section id="adminBox" class="hidden">
+
+    <div class="card">
+
+      <h2>✏️ 새 게시물</h2>
+
+      <label>제목</label>
+      <input
+        id="title"
+        type="text"
+        placeholder="제목을 입력하세요"
+      >
+
+      <label>내용</label>
+      <textarea
+        id="content"
+        placeholder="내용을 입력하세요"
+      ></textarea>
+
+      <label>사진</label>
+      <input
+        id="image"
+        type="file"
+        accept="image/*"
+      >
+
+      <button id="uploadButton">
+        📤 게시물 올리기
+      </button>
+
+      <div id="status"></div>
+
+    </div>
+
+    <div class="card">
+
+      <button
+        id="logoutButton"
+        class="logout"
+      >
+        로그아웃
+      </button>
+
+    </div>
 
   </section>
 
 </main>
 
+
 <script>
 
   // =========================
-  // Supabase
+  // Supabase 연결
   // =========================
 
   const SUPABASE_URL =
@@ -154,6 +216,112 @@
 
 
   // =========================
+  // 화면 전환
+  // =========================
+
+  function showAdmin() {
+    document
+      .getElementById("loginBox")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminBox")
+      .classList.remove("hidden");
+  }
+
+
+  function showLogin() {
+    document
+      .getElementById("adminBox")
+      .classList.add("hidden");
+
+    document
+      .getElementById("loginBox")
+      .classList.remove("hidden");
+  }
+
+
+  // =========================
+  // 현재 로그인 상태 확인
+  // =========================
+
+  async function checkUser() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session) {
+      showAdmin();
+    } else {
+      showLogin();
+    }
+  }
+
+
+  // =========================
+  // 로그인
+  // =========================
+
+  document
+    .getElementById("loginButton")
+    .addEventListener("click", async () => {
+
+      const email =
+        document
+          .getElementById("email")
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById("password")
+          .value;
+
+      const status =
+        document
+          .getElementById("loginStatus");
+
+
+      if (!email || !password) {
+        status.textContent =
+          "이메일과 비밀번호를 입력해줘.";
+        return;
+      }
+
+
+      status.textContent =
+        "로그인 중...";
+
+
+      const {
+        error
+      } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+
+      if (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "❌ 로그인 실패: " +
+          error.message;
+
+        return;
+      }
+
+
+      status.textContent = "";
+
+      showAdmin();
+
+    });
+
+
+  // =========================
   // 게시물 업로드
   // =========================
 
@@ -164,43 +332,46 @@
 
   async function uploadPost() {
 
-    const button =
-      document.getElementById("uploadButton");
-
-    const status =
-      document.getElementById("status");
-
     const title =
-      document.getElementById("title")
+      document
+        .getElementById("title")
         .value
         .trim();
 
     const content =
-      document.getElementById("content")
+      document
+        .getElementById("content")
         .value
         .trim();
 
     const file =
-      document.getElementById("image")
+      document
+        .getElementById("image")
         .files[0];
+
+    const button =
+      document
+        .getElementById("uploadButton");
+
+    const status =
+      document
+        .getElementById("status");
 
 
     if (!title) {
       status.textContent =
-        "제목을 입력해줘!";
+        "제목을 입력해줘.";
       return;
     }
 
-
     if (!content) {
       status.textContent =
-        "내용을 입력해줘!";
+        "내용을 입력해줘.";
       return;
     }
 
 
     button.disabled = true;
-
     status.textContent =
       "업로드 중...";
 
@@ -216,15 +387,21 @@
 
       if (file) {
 
-        const fileName =
-          Date.now() + "-" +
+        const safeName =
           file.name.replace(
             /[^a-zA-Z0-9._-]/g,
             "_"
           );
 
+        const fileName =
+          Date.now() +
+          "-" +
+          safeName;
 
-        const { error: uploadError } =
+
+        const {
+          error: uploadError
+        } =
           await supabaseClient
             .storage
             .from("images")
@@ -239,7 +416,9 @@
         }
 
 
-        const { data } =
+        const {
+          data
+        } =
           supabaseClient
             .storage
             .from("images")
@@ -252,10 +431,12 @@
 
 
       // -------------------------
-      // DB에 게시물 저장
+      // 게시물 DB 저장
       // -------------------------
 
-      const { error: insertError } =
+      const {
+        error: insertError
+      } =
         await supabaseClient
           .from("posts")
           .insert({
@@ -300,8 +481,26 @@
       button.disabled = false;
 
     }
-
   }
+
+
+  // =========================
+  // 로그아웃
+  // =========================
+
+  document
+    .getElementById("logoutButton")
+    .addEventListener("click", async () => {
+
+      await supabaseClient.auth.signOut();
+
+      showLogin();
+
+    });
+
+
+  // 시작
+  checkUser();
 
 </script>
 
