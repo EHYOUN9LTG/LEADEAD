@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>LEADEAD</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>LEADEAD</title>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <style>
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       min-height: 100%;
@@ -26,9 +18,7 @@
       color: #111;
     }
 
-    /* ==============================
-       랜덤 배경
-       ============================== */
+    /* 랜덤 배경 */
 
     #backgroundPhoto {
       position: fixed;
@@ -50,18 +40,15 @@
       opacity: 0.16;
     }
 
-    header,
-    main {
+    header, main {
       position: relative;
       z-index: 1;
     }
 
-    /* ==============================
-       헤더
-       ============================== */
+    /* 헤더 */
 
     header {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255,255,255,0.94);
       color: #111;
       padding: 28px 20px;
       text-align: center;
@@ -80,9 +67,7 @@
       color: #666;
     }
 
-    /* ==============================
-       메인
-       ============================== */
+    /* 메인 */
 
     main {
       max-width: 700px;
@@ -91,17 +76,13 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255,255,255,0.95);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 18px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       backdrop-filter: blur(6px);
     }
-
-    /* ==============================
-       환영
-       ============================== */
 
     .welcome {
       text-align: center;
@@ -111,16 +92,13 @@
       margin-top: 0;
     }
 
-    /* ==============================
-       업로드
-       ============================== */
+    /* 업로드 */
 
     .upload-box h2 {
       margin-top: 0;
     }
 
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
       padding: 13px;
       margin-top: 8px;
@@ -132,8 +110,7 @@
       outline: none;
     }
 
-    input:focus,
-    textarea:focus {
+    input:focus, textarea:focus {
       border-color: #888;
       background: white;
     }
@@ -183,9 +160,7 @@
       word-break: break-word;
     }
 
-    /* ==============================
-       게시물
-       ============================== */
+    /* 게시물 */
 
     #posts {
       display: flex;
@@ -194,7 +169,7 @@
     }
 
     .post {
-      background: rgba(255, 255, 255, 0.96);
+      background: rgba(255,255,255,0.96);
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
@@ -223,16 +198,112 @@
       font-size: 21px;
     }
 
-    .post p {
+    .post-text {
       margin: 0;
       white-space: pre-wrap;
-      line-height: 1.6;
+      line-height: 1.7;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
     .date {
       margin-top: 14px;
       color: #999;
       font-size: 12px;
+    }
+
+    /* 하트 */
+
+    .like-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 14px;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .like-button {
+      width: auto;
+      margin: 0;
+      padding: 9px 15px;
+      background: #f5f5f5;
+      color: #333;
+      font-size: 15px;
+    }
+
+    .like-button.liked {
+      background: #ffe8ed;
+      color: #e11d48;
+    }
+
+    .like-count {
+      font-size: 14px;
+      color: #777;
+    }
+
+    /* 댓글 */
+
+    .comments {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .comments-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .comment {
+      padding: 10px 0;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .comment:last-child {
+      border-bottom: none;
+    }
+
+    .comment-author {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .comment-text {
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-date {
+      margin-top: 4px;
+      color: #aaa;
+      font-size: 11px;
+    }
+
+    .comment-form {
+      margin-top: 12px;
+    }
+
+    .comment-form input {
+      margin-top: 0;
+    }
+
+    .comment-form textarea {
+      min-height: 80px;
+    }
+
+    .comment-button {
+      margin-top: 7px;
+    }
+
+    .no-comments {
+      color: #999;
+      font-size: 13px;
+      padding: 5px 0;
     }
 
     .empty {
@@ -260,102 +331,82 @@
       #backgroundPhoto img {
         opacity: 0.12;
       }
-
     }
-  </style>
-</head>
-
-<body>
-
-  <!-- 랜덤 배경 -->
-  <div id="backgroundPhoto">
+  </style></head><body>  <div id="backgroundPhoto">
     <img id="randomBackground" alt="">
-  </div>
-
-
-  <header>
+  </div>  <header>
     <h1>LEADEAD</h1>
     <p>사진과 이야기를 함께 기록하는 공간</p>
-  </header>
+  </header>  <main><section class="card welcome">
+  <h2>👋 환영합니다</h2>
+  <p>
+    LEADEAD에 기록된 사진과 이야기를 만나보세요.
+  </p>
+</section>
 
 
-  <main>
+<!-- 게시물 업로드 -->
 
-    <!-- 환영 -->
-    <section class="card welcome">
+<section class="card upload-box">
 
-      <h2>👋 환영합니다</h2>
+  <h2>📷 게시물 올리기</h2>
 
-      <p>
-        LEADEAD에 기록된 사진과 이야기를 만나보세요.
-      </p>
+  <input
+    id="authorName"
+    type="text"
+    placeholder="이름"
+    maxlength="30"
+  >
 
-    </section>
+  <input
+    id="title"
+    type="text"
+    placeholder="제목"
+    maxlength="100"
+  >
 
+  <textarea
+    id="content"
+    placeholder="내용을 입력하세요."
+  ></textarea>
 
-    <!-- 게시물 업로드 -->
-    <section class="card upload-box">
+  <input
+    id="image"
+    type="file"
+    accept="image/*"
+    onchange="previewImage()"
+  >
 
-      <h2>📷 게시물 올리기</h2>
+  <img
+    id="imagePreview"
+    class="preview"
+    alt="사진 미리보기"
+  >
 
-      <input
-        id="authorName"
-        type="text"
-        placeholder="이름"
-        maxlength="30"
-      >
+  <button onclick="uploadPost()">
+    게시물 올리기
+  </button>
 
-      <input
-        id="title"
-        type="text"
-        placeholder="제목"
-        maxlength="100"
-      >
+  <div
+    id="uploadStatus"
+    class="status"
+    style="display:none;"
+  ></div>
 
-      <textarea
-        id="content"
-        placeholder="내용을 입력하세요."
-      ></textarea>
-
-      <input
-        id="image"
-        type="file"
-        accept="image/*"
-        onchange="previewImage()"
-      >
-
-      <img
-        id="imagePreview"
-        class="preview"
-        alt="사진 미리보기"
-      >
-
-      <button onclick="uploadPost()">
-        게시물 올리기
-      </button>
-
-      <div
-        id="uploadStatus"
-        class="status"
-        style="display:none;"
-      ></div>
-
-    </section>
+</section>
 
 
-    <!-- 게시물 -->
-    <section id="posts">
+<!-- 게시물 -->
 
-      <div class="card empty">
-        게시물을 불러오는 중...
-      </div>
+<section id="posts">
 
-    </section>
+  <div class="card empty">
+    게시물을 불러오는 중...
+  </div>
 
-  </main>
+</section>
 
-
-  <script>
+  </main>  <script>
 
     // ==========================================
     // Supabase
@@ -444,7 +495,6 @@
 
     }
 
-
     setRandomBackground();
 
 
@@ -457,12 +507,38 @@
         "leadead_author_name"
       );
 
-
     if (savedName) {
 
       document
         .getElementById("authorName")
         .value = savedName;
+
+    }
+
+
+    // ==========================================
+    // 방문자 ID
+    // ==========================================
+
+    let visitorId =
+      localStorage.getItem(
+        "leadead_visitor_id"
+      );
+
+    if (!visitorId) {
+
+      visitorId =
+        "visitor-" +
+        Date.now() +
+        "-" +
+        Math.random()
+          .toString(36)
+          .substring(2);
+
+      localStorage.setItem(
+        "leadead_visitor_id",
+        visitorId
+      );
 
     }
 
@@ -535,68 +611,40 @@
           .getElementById("uploadStatus");
 
 
-      status.style.display =
-        "block";
+      status.style.display = "block";
 
 
-      // 이름 확인
       if (!authorName) {
-
-        status.textContent =
-          "❌ 이름을 입력해줘.";
-
+        status.textContent = "❌ 이름을 입력해줘.";
         return;
-
       }
 
-
-      // 이름 기억
       localStorage.setItem(
         "leadead_author_name",
         authorName
       );
 
 
-      // 제목 확인
       if (!title) {
-
-        status.textContent =
-          "❌ 제목을 입력해줘.";
-
+        status.textContent = "❌ 제목을 입력해줘.";
         return;
-
       }
 
 
-      // 내용 확인
       if (!content) {
-
-        status.textContent =
-          "❌ 내용을 입력해줘.";
-
+        status.textContent = "❌ 내용을 입력해줘.";
         return;
-
       }
 
 
-      // 사진 확인
       if (!file) {
-
-        status.textContent =
-          "❌ 사진을 선택해줘.";
-
+        status.textContent = "❌ 사진을 선택해줘.";
         return;
-
       }
 
 
-      status.textContent =
-        "📤 업로드 중...";
+      status.textContent = "📤 업로드 중...";
 
-
-      // ========================================
-      // 이미지 업로드
-      // ========================================
 
       const extension =
         file.name
@@ -644,10 +692,6 @@
       }
 
 
-      // ========================================
-      // 사진 URL
-      // ========================================
-
       const {
         data: publicData
       } =
@@ -661,23 +705,19 @@
         publicData.publicUrl;
 
 
-      // ========================================
-      // 게시물 DB 저장
-      // ========================================
-
       const {
         error: insertError
       } =
-        await supabaseClient
-          .from("posts")
-          .insert({
+      await supabaseClient
+        .from("posts")
+        .insert({
 
-            author_name: authorName,
-            title: title,
-            content: content,
-            image_url: imageUrl
+          author_name: authorName,
+          title: title,
+          content: content,
+          image_url: imageUrl
 
-          });
+        });
 
 
       if (insertError) {
@@ -693,40 +733,351 @@
       }
 
 
-      // ========================================
-      // 완료
-      // ========================================
-
       status.textContent =
         "✅ 게시물이 올라갔어!";
 
 
-      // 제목/내용/사진만 초기화
-      document
-        .getElementById("title")
-        .value = "";
-
-      document
-        .getElementById("content")
-        .value = "";
-
-      document
-        .getElementById("image")
-        .value = "";
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+      document.getElementById("image").value = "";
 
       document
         .getElementById("imagePreview")
         .style.display = "none";
 
 
-      // 이름은 그대로 유지
       document
         .getElementById("authorName")
         .value = authorName;
 
 
-      // 게시물 새로고침
       loadPosts();
+
+    }
+
+
+    // ==========================================
+    // 하트 여부
+    // ==========================================
+
+    async function getLikeInfo(postId) {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("likes")
+          .select("visitor_id")
+          .eq("post_id", postId);
+
+
+      if (error) {
+
+        console.error(error);
+
+        return {
+          count: 0,
+          liked: false
+        };
+
+      }
+
+
+      return {
+        count: data.length,
+        liked: data.some(
+          item =>
+            item.visitor_id === visitorId
+        )
+      };
+
+    }
+
+
+    // ==========================================
+    // 하트 누르기
+    // ==========================================
+
+    async function toggleLike(postId) {
+
+      const button =
+        document.getElementById(
+          "like-" + postId
+        );
+
+      const count =
+        document.getElementById(
+          "like-count-" + postId
+        );
+
+
+      button.disabled = true;
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("likes")
+          .select("id")
+          .eq("post_id", postId)
+          .eq("visitor_id", visitorId)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(error);
+
+        button.disabled = false;
+
+        return;
+
+      }
+
+
+      if (data) {
+
+        button.disabled = false;
+
+        return;
+
+      }
+
+
+      const {
+        error: insertError
+      } =
+        await supabaseClient
+          .from("likes")
+          .insert({
+
+            post_id: postId,
+            visitor_id: visitorId
+
+          });
+
+
+      if (insertError) {
+
+        console.error(insertError);
+
+        button.disabled = false;
+
+        return;
+
+      }
+
+
+      const {
+        count: newCount
+      } =
+        await getLikeInfo(postId);
+
+
+      count.textContent =
+        newCount + "개";
+
+
+      button.classList.add("liked");
+
+      button.textContent =
+        "❤️ 좋아요";
+
+      button.disabled = false;
+
+    }
+
+
+    // ==========================================
+    // 댓글 불러오기
+    // ==========================================
+
+    async function loadComments(postId) {
+
+      const container =
+        document.getElementById(
+          "comments-" + postId
+        );
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("comments")
+          .select("*")
+          .eq("post_id", postId)
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          );
+
+
+      if (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+          '<div class="no-comments">댓글을 불러오지 못했어.</div>';
+
+        return;
+
+      }
+
+
+      if (!data || data.length === 0) {
+
+        container.innerHTML =
+          '<div class="no-comments">아직 댓글이 없어.</div>';
+
+        return;
+
+      }
+
+
+      container.innerHTML = "";
+
+
+      data.forEach(comment => {
+
+        const div =
+          document.createElement("div");
+
+        div.className =
+          "comment";
+
+
+        div.innerHTML = `
+
+          <div class="comment-author">
+            👤 ${escapeHTML(
+              comment.author_name
+            )}
+          </div>
+
+          <div class="comment-text">
+            ${escapeHTML(
+              comment.content
+            )}
+          </div>
+
+          <div class="comment-date">
+            ${formatDate(
+              comment.created_at
+            )}
+          </div>
+
+        `;
+
+
+        container.appendChild(div);
+
+      });
+
+    }
+
+
+    // ==========================================
+    // 댓글 작성
+    // ==========================================
+
+    async function addComment(postId) {
+
+      const nameInput =
+        document.getElementById(
+          "comment-name-" + postId
+        );
+
+      const contentInput =
+        document.getElementById(
+          "comment-content-" + postId
+        );
+
+      const status =
+        document.getElementById(
+          "comment-status-" + postId
+        );
+
+
+      const authorName =
+        nameInput.value.trim();
+
+      const content =
+        contentInput.value.trim();
+
+
+      if (!authorName) {
+
+        status.textContent =
+          "❌ 이름을 입력해줘.";
+
+        return;
+
+      }
+
+
+      if (!content) {
+
+        status.textContent =
+          "❌ 댓글을 입력해줘.";
+
+        return;
+
+      }
+
+
+      localStorage.setItem(
+        "leadead_author_name",
+        authorName
+      );
+
+
+      status.textContent =
+        "댓글 등록 중...";
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("comments")
+          .insert({
+
+            post_id: postId,
+            author_name: authorName,
+            content: content
+
+          });
+
+
+      if (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "❌ 댓글 등록 실패: " +
+          error.message;
+
+        return;
+
+      }
+
+
+      contentInput.value = "";
+
+      nameInput.value = authorName;
+
+      status.textContent =
+        "✅ 댓글이 등록됐어!";
+
+
+      loadComments(postId);
 
     }
 
@@ -791,11 +1142,10 @@
       postsContainer.innerHTML = "";
 
 
-      data.forEach(post => {
+      for (const post of data) {
 
         const article =
           document.createElement("article");
-
 
         article.className =
           "post";
@@ -820,6 +1170,28 @@
         }
 
 
+        const likeInfo =
+          await getLikeInfo(post.id);
+
+
+        const likeClass =
+          likeInfo.liked
+            ? "like-button liked"
+            : "like-button";
+
+
+        const likeText =
+          likeInfo.liked
+            ? "❤️ 좋아요"
+            : "🤍 좋아요";
+
+
+        const savedCommentName =
+          localStorage.getItem(
+            "leadead_author_name"
+          ) || "";
+
+
         article.innerHTML = `
 
           ${imageHTML}
@@ -838,11 +1210,11 @@
               )}
             </h3>
 
-            <p>
+            <div class="post-text">
               ${escapeHTML(
-                post.content || ""
+                post.content || "내용 없음"
               )}
-            </p>
+            </div>
 
             <div class="date">
               ${formatDate(
@@ -850,82 +1222,136 @@
               )}
             </div>
 
+
+            <!-- 하트 -->
+
+            <div class="like-area">
+
+              <button
+                id="like-${post.id}"
+                class="${likeClass}"
+                onclick="toggleLike(${post.id})"
+              >
+                ${likeText}
+              </button>
+
+              <span
+                id="like-count-${post.id}"
+                class="like-count"
+              >
+                ${likeInfo.count}개
+              </span>
+
+            </div>
+
+
+            <!-- 댓글 -->
+
+            <div class="comments">
+
+              <div class="comments-title">
+                💬 댓글
+              </div>
+
+              <div
+                id="comments-${post.id}"
+              >
+                불러오는 중...
+              </div>
+
+
+              <div class="comment-form">
+
+                <input
+                  id="comment-name-${post.id}"
+                  type="text"
+                  maxlength="30"
+                  placeholder="이름"
+                  value="${escapeHTML(
+                    savedCommentName
+                  )}"
+                >
+
+                <textarea
+                  id="comment-content-${post.id}"
+                  maxlength="500"
+                  placeholder="댓글을 입력하세요."
+                ></textarea>            <button
+              class="comment-button"
+              onclick="addComment(${post.id})"
+            >
+              댓글 달기
+            </button>
+
+            <div
+              id="comment-status-${post.id}"
+              class="status"
+            ></div>
+
           </div>
 
-        `;
+        </div>
+
+      </div>
+
+    `;
 
 
-        postsContainer.appendChild(
-          article
-        );
-
-      });
-
-    }
+    postsContainer.appendChild(article);
 
 
-    // ==========================================
-    // 날짜
-    // ==========================================
+    loadComments(post.id);
 
-    function formatDate(date) {
+  }
 
-      if (!date) return "";
+}
 
 
-      return new Date(date)
-        .toLocaleString(
-          "ko-KR",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-          }
-        );
+// ==========================================
+// 날짜
+// ==========================================
 
-    }
+function formatDate(date) {
+
+  if (!date) return "";
 
 
-    // ==========================================
-    // HTML 안전 처리
-    // ==========================================
+  return new Date(date)
+    .toLocaleString(
+      "ko-KR",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
 
-    function escapeHTML(text) {
-
-      return String(text ?? "")
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
+}
 
 
-    // ==========================================
-    // 시작
-    // ==========================================
+// ==========================================
+// HTML 안전 처리
+// ==========================================
 
-    loadPosts();
+function escapeHTML(text) {
 
-  </script>
+  return String(text ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
-</body>
+}
+
+
+// ==========================================
+// 시작
+// ==========================================
+
+loadPosts();
+
+  </script></body>
 </html>
