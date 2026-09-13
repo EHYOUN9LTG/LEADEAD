@@ -6,8 +6,7 @@
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       min-height: 100%;
@@ -69,12 +68,6 @@
       color: #111111;
       font-size: 15px;
       outline: none;
-    }
-
-    input:focus,
-    textarea:focus {
-      border-color: #888888;
-      background: #ffffff;
     }
 
     textarea {
@@ -237,6 +230,58 @@
       margin-bottom: 10px;
     }
 
+    /* 댓글 관리 */
+
+    .comments-admin {
+      margin-top: 18px;
+      padding-top: 15px;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .comments-admin-title {
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .comment-admin-item {
+      padding: 12px;
+      margin-top: 8px;
+      background: #f8f8f8;
+      border-radius: 12px;
+    }
+
+    .comment-admin-author {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .comment-admin-content {
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-admin-date {
+      margin-top: 5px;
+      color: #999999;
+      font-size: 11px;
+    }
+
+    .comment-delete {
+      background: #fee2e2;
+      color: #b91c1c;
+      margin-top: 8px;
+    }
+
+    .no-comments {
+      color: #999999;
+      font-size: 13px;
+      padding: 5px 0;
+    }
+
     @media (max-width: 600px) {
       .container {
         padding: 12px;
@@ -274,6 +319,7 @@
 <div id="loginStatus" class="status"></div>
 
   </section>  <!-- 관리자 -->  <section id="adminBox" class="hidden"><!-- 새 게시물 -->
+
 <div class="card">
 
   <h2>새 게시물 작성</h2>
@@ -315,6 +361,7 @@
 
 
 <!-- 게시물 목록 -->
+
 <div class="card">
 
   <h2>게시물 목록</h2>
@@ -334,6 +381,7 @@
 
 
 <!-- 로그아웃 -->
+
 <div class="card">
 
   <button
@@ -348,7 +396,7 @@
   </section></div><script>
 
   // ==========================================
-  // Supabase 설정
+  // Supabase
   // ==========================================
 
   const SUPABASE_URL =
@@ -365,7 +413,7 @@
 
 
   // ==========================================
-  // 화면 전환
+  // 화면
   // ==========================================
 
   function showAdmin() {
@@ -631,17 +679,9 @@
       "✅ 게시물이 업로드됐어!";
 
 
-    document
-      .getElementById("title")
-      .value = "";
-
-    document
-      .getElementById("content")
-      .value = "";
-
-    document
-      .getElementById("image")
-      .value = "";
+    document.getElementById("title").value = "";
+    document.getElementById("content").value = "";
+    document.getElementById("image").value = "";
 
     document
       .getElementById("imagePreview")
@@ -714,11 +754,9 @@
     }
 
 
-    // ==========================================
-    // 게시물 목록 표시
-    // ==========================================
+    // 게시물
 
-    data.forEach(post => {
+    for (const post of data) {
 
       const div =
         document.createElement("div");
@@ -757,7 +795,9 @@
 
           ? `
               <img
-                src="${escapeAttribute(post.image_url)}"
+                src="${escapeAttribute(
+                  post.image_url
+                )}"
                 alt="게시물 이미지"
               >
             `
@@ -808,8 +848,20 @@
             class="delete"
             onclick="deletePost('${post.id}')"
           >
-            삭제
+            게시물 삭제
           </button>
+
+        </div>
+
+        <div class="comments-admin">
+
+          <div class="comments-admin-title">
+            💬 댓글 관리
+          </div>
+
+          <div id="admin-comments-${post.id}">
+            댓글 불러오는 중...
+          </div>
 
         </div>
 
@@ -818,7 +870,166 @@
 
       list.appendChild(div);
 
+
+      // 해당 게시물 댓글 불러오기
+
+      await loadAdminComments(post.id);
+
+    }
+
+  }
+
+
+  // ==========================================
+  // 관리자 댓글 불러오기
+  // ==========================================
+
+  async function loadAdminComments(postId) {
+
+    const container =
+      document.getElementById(
+        "admin-comments-" + postId
+      );
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("comments")
+        .select("*")
+        .eq("post_id", postId)
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
+
+
+    if (error) {
+
+      console.error(error);
+
+      container.innerHTML =
+        '<div class="no-comments">댓글을 불러오지 못했어.</div>';
+
+      return;
+
+    }
+
+
+    if (!data || data.length === 0) {
+
+      container.innerHTML =
+        '<div class="no-comments">댓글이 없어.</div>';
+
+      return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    data.forEach(comment => {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "comment-admin-item";
+
+
+      item.innerHTML = `
+
+        <div class="comment-admin-author">
+          👤 ${escapeHtml(
+            comment.author_name || "익명"
+          )}
+        </div>
+
+        <div class="comment-admin-content">
+          ${escapeHtml(
+            comment.content || ""
+          )}
+        </div>
+
+        <div class="comment-admin-date">
+          ${
+            comment.created_at
+              ? new Date(
+                  comment.created_at
+                ).toLocaleString(
+                  "ko-KR"
+                )
+              : ""
+          }
+        </div>
+
+        <button
+          class="comment-delete"
+          onclick="deleteComment('${comment.id}')"
+        >
+          🗑️ 댓글 삭제
+        </button>
+
+      `;
+
+
+      container.appendChild(item);
+
     });
+
+  }
+
+
+  // ==========================================
+  // 댓글 삭제
+  // ==========================================
+
+  async function deleteComment(id) {
+
+    const ok =
+      confirm(
+        "정말 이 댓글을 삭제할까?"
+      );
+
+
+    if (!ok) return;
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("comments")
+        .delete()
+        .eq(
+          "id",
+          id
+        );
+
+
+    if (error) {
+
+      alert(
+        "❌ 댓글 삭제 실패\n" +
+        error.message
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      "✅ 댓글 삭제 완료!"
+    );
+
+
+    loadPosts();
 
   }
 
@@ -867,6 +1078,7 @@
       const button =
         card.querySelector(".edit");
 
+
       if (
         button &&
         button.getAttribute("onclick") ===
@@ -896,7 +1108,9 @@
           ? `
             <img
               class="edit-image"
-              src="${escapeAttribute(post.image_url)}"
+              src="${escapeAttribute(
+                post.image_url
+              )}"
               alt="게시물 이미지"
             >
           `
@@ -905,14 +1119,18 @@
 
       <input
         id="edit-title-${id}"
-        value="${escapeAttribute(post.title || "")}"
+        value="${escapeAttribute(
+          post.title || ""
+        )}"
         placeholder="제목"
       >
 
       <textarea
         id="edit-content-${id}"
         placeholder="내용"
-      >${escapeHtml(post.content || "")}</textarea>  <button
+      >${escapeHtml(
+        post.content || ""
+      )}</textarea>  <button
     class="save"
     onclick="savePost('${id}')"
   >
@@ -955,7 +1173,9 @@ const content =
 
 if (!title) {
 
-  alert("제목을 입력해줘.");
+  alert(
+    "제목을 입력해줘."
+  );
 
   return;
 
@@ -964,7 +1184,9 @@ if (!title) {
 
 if (!content) {
 
-  alert("내용을 입력해줘.");
+  alert(
+    "내용을 입력해줘."
+  );
 
   return;
 
@@ -998,7 +1220,10 @@ if (error) {
 }
 
 
-alert("✅ 수정 완료!");
+alert(
+  "✅ 수정 완료!"
+);
+
 
 loadPosts();
 
@@ -1041,7 +1266,10 @@ if (error) {
 }
 
 
-alert("✅ 삭제 완료!");
+alert(
+  "✅ 삭제 완료!"
+);
+
 
 loadPosts();
 
@@ -1053,24 +1281,41 @@ loadPosts();
 
 async function logout() {
 
-await supabaseClient.auth.signOut();
+await supabaseClient
+  .auth
+  .signOut();
 
 showLogin();
 
 }
 
 // ==========================================
-// 안전한 HTML 처리
+// HTML 안전 처리
 // ==========================================
 
 function escapeHtml(value) {
 
 return String(value ?? "")
-  .replace(/&/g, "&amp;")
-  .replace(/</g, "&lt;")
-  .replace(/>/g, "&gt;")
-  .replace(/"/g, "&quot;")
-  .replace(/'/g, "&#039;");
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
 
 }
 
